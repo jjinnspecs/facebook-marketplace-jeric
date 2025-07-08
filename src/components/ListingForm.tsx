@@ -397,6 +397,10 @@ export default function ListingForm() {
               <strong>Description:</strong><br />
               {watchFields.description || 'No description provided yet.'}
             </p>
+            <p className="mt-4 text-xs text-gray-800">
+              <strong>Category:</strong><br />
+              {watchFields.category || 'No category selected'}
+            </p>
           </div>
         </div>
       </div>
