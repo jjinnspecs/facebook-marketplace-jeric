@@ -126,74 +126,91 @@ export default function ListingForm() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* LEFT COLUMN: FORM */}
         <div className="space-y-4">
-          {/* Image Upload */}
-          <div>
-            <label htmlFor="image-upload" className="block text-sm font-semibold text-gray-800 mb-2">
-              Upload photo
-            </label>
-            <div
-              className={`relative w-full border-2 border-dashed rounded-lg p-4 flex items-center justify-center text-center cursor-pointer transition aspect-video ${ // Added aspect-video for consistent height
-                imagePreview.length > 0
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-300 hover:border-blue-400'
-              }`}
-            >
-              <input
-                id="image-upload"
-                type="file"
-                accept="image/*"
-                multiple
-                {...register('image')}
-                onChange={(e) => {
-                  if (e.target.files && e.target.files.length > 0) {
-                    const files = Array.from(e.target.files);
-                    const previews = files.map((file) => URL.createObjectURL(file));
-                    setImagePreview(previews);
-                    setCurrentIndex(0);
-                  } else {
-                    setImagePreview([]);
-                  }
-                }}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-              />
-              {imagePreview.length > 0 ? (
-                <div className="flex gap-2 overflow-x-auto z-0 p-2">
-                  {imagePreview.map((src, i) => (
-                    <div key={i} className="relative flex-shrink-0">
-                      <Image
-                        fill
-                        src={src}
-                        alt={`Preview ${i}`}
-                        className="h-full max-h-40 object-contain rounded"
-                      />
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const updatedPreviews = imagePreview.filter((_, idx) => idx !== i);
-                          setImagePreview(updatedPreviews);
-                          const dataTransfer = new DataTransfer();
-                          const currentFiles = Array.from(watchFields.image || []);
-                          currentFiles.filter((_, idx) => idx !== i).forEach(file => dataTransfer.items.add(file as File));
-                          setValue('image', dataTransfer.files as FileList, { shouldValidate: true });
-                          setCurrentIndex(0);
-                        }}
-                        className="absolute top-0 right-0 z-20 text-red-500 hover:text-red-700 bg-white bg-opacity-75 rounded-full w-6 h-6 flex items-center justify-center text-lg leading-none cursor-pointer"
-                        aria-label="Remove image"
-                      >
-                        &times;
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-gray-500 z-0">Click to upload or drag a photo</p>
-              )}
-            </div>
-            {typeof errors.image?.message === 'string' && (
-              <p className="text-sm text-red-500 mt-1">{errors.image.message}</p>
+        {/* Image Upload */}
+        <div>
+          <label htmlFor="image-upload" className="block text-sm font-semibold text-gray-800 mb-2">
+            Upload Photo
+          </label>
+
+          <div
+            className={`relative w-full border-2 border-dashed rounded-lg flex flex-col items-center justify-center text-center cursor-pointer transition aspect-video px-4 py-6 sm:py-8 ${
+              imagePreview.length > 0 ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-400'
+            }`}
+          >
+            <input
+              id="image-upload"
+              type="file"
+              accept="image/*"
+              multiple
+              {...register('image')}
+              onChange={(e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                  const files = Array.from(e.target.files);
+                  const previews = files.map((file) => URL.createObjectURL(file));
+                  setImagePreview(previews);
+                  setCurrentIndex(0);
+                } else {
+                  setImagePreview([]);
+                }
+              }}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+            />
+
+            {imagePreview.length === 0 ? (
+              <div className="z-0 flex flex-col items-center text-gray-500">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-12 w-12 mb-2 text-blue-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M7 16a4 4 0 01-.88-7.89 5 5 0 019.75 1.38H17a4 4 0 010 8H7zm5-8v6m0 0l-2-2m2 2l2-2"
+                  />
+                </svg>
+                <p className="text-sm">Click or drag files to upload</p>
+              </div>
+            ) : (
+              <div className="flex gap-2 overflow-x-auto z-0 w-full py-2 px-1">
+                {imagePreview.map((src, i) => (
+                  <div key={i} className="relative w-24 h-24 flex-shrink-0 rounded border bg-white shadow">
+                    <Image
+                      src={src}
+                      alt={`Preview ${i}`}
+                      fill
+                      className="object-cover rounded"
+                    />
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const updatedPreviews = imagePreview.filter((_, idx) => idx !== i);
+                        setImagePreview(updatedPreviews);
+                        const dataTransfer = new DataTransfer();
+                        const currentFiles = Array.from(watchFields.image || []);
+                        currentFiles.filter((_, idx) => idx !== i).forEach(file => dataTransfer.items.add(file as File));
+                        setValue('image', dataTransfer.files as FileList, { shouldValidate: true });
+                        setCurrentIndex(0);
+                      }}
+                      className="absolute -top-2 -right-2 bg-white text-red-500 hover:text-red-700 border border-red-300 rounded-full w-6 h-6 text-xs flex items-center justify-center shadow z-20"
+                      aria-label="Remove image"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
+
+          {typeof errors.image?.message === 'string' && (
+            <p className="text-sm text-red-500 mt-1">{errors.image.message}</p>
+          )}
+        </div>
 
           {/* Title */}
           <div>
