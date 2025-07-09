@@ -6,6 +6,8 @@ import { Listing } from '@/types/listing';
 import ListingCard from '@/components/ListingCard';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { Search } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export default function HomePage() {
   const [listings, setListings] = useState<Listing[]>([]);
@@ -76,7 +78,10 @@ export default function HomePage() {
         </div>
       ) : (
         <div className="text-center py-10 text-gray-500">
-          No listings found.
+          <p className="mb-2">No listings found.</p>
+          <Button asChild>
+            <Link href="/create">Create a new listing</Link>
+          </Button>
         </div>
       )}
     </>

@@ -18,7 +18,7 @@ export default function ListingGallery({ images, title }: ListingGalleryProps) {
     trackMouse: true,
   });
 
-  const currentImage = images[currentIndex] || "/placeholder.png";
+  const currentImage = images[currentIndex] || "/placeholder.jpg";
 
   return (
     <>
